@@ -54,8 +54,7 @@ public abstract class AbstractJobConfiguration {
     public abstract Job job();
 
     public final JobBuilder createJob() {
-        return jobBuilderFactory.get(props.getJobName())
-                .listener(protocolListener);
+        return jobBuilderFactory.get(props.getJobName());
     }
 
     public final JobTrigger createJobTrigger(Supplier<JobParameters> jobParametersSupplier) {
@@ -77,6 +76,8 @@ public abstract class AbstractJobConfiguration {
                 .reader(task.getItemReader())
                 .processor(task.getItemProcessor())
                 .writer(task.getItemWriter());
+
+        builder.listener(protocolListener);
 
         for (StepListener listener : task.getStepListeners()) {
             if (listener instanceof ChunkListener) {
