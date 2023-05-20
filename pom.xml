@@ -15,6 +15,7 @@
     <description>batch</description>
     <properties>
         <java.version>1.8</java.version>
+        <guava.version>30.0-jre</guava.version>
     </properties>
     <dependencies>
         <dependency>
@@ -40,6 +41,11 @@
             <groupId>org.springframework.batch</groupId>
             <artifactId>spring-batch-test</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${guava.version}</version>
         </dependency>
     </dependencies>
 

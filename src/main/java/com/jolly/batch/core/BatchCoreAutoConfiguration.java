@@ -16,6 +16,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
+import java.time.Duration;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+
 /**
  * @author jolly
  */
@@ -59,5 +63,17 @@ public class BatchCoreAutoConfiguration {
     @Bean
     public ProtocolListener protocolListener() {
         return new ProtocolListener();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    FailRetryListener hourlyRetryListener() {
+        return new FailRetryListener(Duration.ofHours(1), 5);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    ScheduledExecutorService scheduledExecutorService() {
+        return Executors.newSingleThreadScheduledExecutor();
     }
 }
