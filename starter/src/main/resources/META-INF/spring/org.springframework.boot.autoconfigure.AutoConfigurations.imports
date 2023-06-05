@@ -1,0 +1,3 @@
+com.jolly.starter.BatchCoreAutoConfiguration
+com.jolly.starter.remotechunking.leader.LeaderChunkAutoConfiguration
+com.jolly.starter.remotechunking.worker.WorkerChunkAutoConfiguration
