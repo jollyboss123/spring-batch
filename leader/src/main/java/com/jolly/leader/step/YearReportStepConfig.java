@@ -3,6 +3,8 @@ package com.jolly.leader.step;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jolly.leader.domain.YearPlatformSales;
 import com.jolly.leader.domain.YearReport;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.batch.core.configuration.annotation.StepScope;
@@ -13,7 +15,6 @@ import org.springframework.batch.integration.chunk.ChunkMessageChannelItemWriter
 import org.springframework.batch.integration.chunk.RemoteChunkHandlerFactoryBean;
 import org.springframework.batch.item.Chunk;
 import org.springframework.batch.item.ItemReader;
-import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.database.builder.JdbcCursorItemReaderBuilder;
 import org.springframework.boot.autoconfigure.batch.JobExecutionEvent;
 import org.springframework.context.annotation.Bean;
@@ -36,20 +37,14 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author jolly
  */
 @Configuration
-public
-class YearReportStepConfig {
+@Slf4j
+@RequiredArgsConstructor
+public class YearReportStepConfig {
     private final Map<Integer, YearReport> reportMap = new ConcurrentHashMap<>();
     private final DataSource dataSource;
     private final JobRepository jobRepository;
     private final PlatformTransactionManager transactionManager;
     private final ObjectMapper objectMapper;
-
-    YearReportStepConfig(DataSource dataSource, JobRepository jobRepository, PlatformTransactionManager transactionManager, ObjectMapper objectMapper, ItemWriter<String> itemWriter) {
-        this.dataSource = dataSource;
-        this.jobRepository = jobRepository;
-        this.transactionManager = transactionManager;
-        this.objectMapper = objectMapper;
-    }
 
     @EventListener
     public void batchJobCompleted(JobExecutionEvent event) {
@@ -57,7 +52,7 @@ class YearReportStepConfig {
             put("running", event.getJobExecution().getStatus().isRunning());
             put("finished", event.getJobExecution().getExitStatus().getExitCode());
         }};
-        System.out.println("jobExecutionEvent: [" + running + "]");
+        log.info("jobExecutionEvent: [{}]", running);
         this.reportMap.clear();
     }
 

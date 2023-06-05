@@ -1,5 +1,7 @@
 package com.jolly.leader.step;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
@@ -14,19 +16,13 @@ import org.springframework.transaction.support.TransactionTemplate;
  * @author jolly
  */
 @Configuration
-public
-class YearPlatformReportStepConfig {
+@Slf4j
+@RequiredArgsConstructor
+public class YearPlatformReportStepConfig {
     private final JobRepository repository;
     private final JdbcTemplate jdbcTemplate;
     private final PlatformTransactionManager transactionManager;
     private final TransactionTemplate transactionTemplate;
-
-    YearPlatformReportStepConfig(JobRepository repository, JdbcTemplate jdbcTemplate, PlatformTransactionManager transactionManager, TransactionTemplate transactionTemplate) {
-        this.repository = repository;
-        this.jdbcTemplate = jdbcTemplate;
-        this.transactionManager = transactionManager;
-        this.transactionTemplate = transactionTemplate;
-    }
 
     @Bean
     public Step yearPlatformReportStep() {

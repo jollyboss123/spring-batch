@@ -1,6 +1,8 @@
 package com.jolly.leader.step;
 
 import com.jolly.leader.domain.GameByYear;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.StepExecution;
@@ -29,22 +31,15 @@ import java.util.Objects;
  * @author jolly
  */
 @Configuration
-public
-class CsvToDbStepConfig {
+@Slf4j
+@RequiredArgsConstructor
+public class CsvToDbStepConfig {
     private final DataSource dataSource;
     private final Resource resource;
     private final JdbcTemplate jdbcTemplate;
     private final JobRepository repository;
     private final PlatformTransactionManager transactionManager;
     public static final String EMPTY_CSV_STATUS = "EMPTY";
-
-    CsvToDbStepConfig(DataSource dataSource, @Value("${csvFile}") Resource resource, JdbcTemplate jdbcTemplate, JobRepository repository, PlatformTransactionManager transactionManager) {
-        this.dataSource = dataSource;
-        this.resource = resource;
-        this.jdbcTemplate = jdbcTemplate;
-        this.repository = repository;
-        this.transactionManager = transactionManager;
-    }
 
     @Bean
     @StepScope
@@ -146,7 +141,7 @@ class CsvToDbStepConfig {
                                 jdbcTemplate.queryForObject("select coalesce(count(*) ,0) from video_game_sales", Integer.class)
                         );
                         ExitStatus status = count == 0 ? new ExitStatus(EMPTY_CSV_STATUS) : ExitStatus.COMPLETED;
-                        System.out.println("the status is " + status);
+                        log.info("the status is {}", status);
                         return status;
                     }
                 })

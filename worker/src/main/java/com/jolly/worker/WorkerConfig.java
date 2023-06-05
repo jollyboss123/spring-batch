@@ -3,6 +3,8 @@ package com.jolly.worker;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jolly.leader.domain.YearReport;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.batch.core.step.item.SimpleChunkProcessor;
@@ -21,12 +23,10 @@ import org.springframework.integration.dsl.MessageChannels;
  * @author jolly
  */
 @Configuration
+@RequiredArgsConstructor
+@Slf4j
 class WorkerConfig {
     private final ObjectMapper objectMapper;
-
-    WorkerConfig(ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
-    }
 
     @Bean
     DirectChannel requests() {
@@ -63,15 +63,15 @@ class WorkerConfig {
     }
 
     private static void doSomethingTimeIntensive(YearReport yearReport) {
-        System.out.println("gotten year report");
-        System.out.println(yearReport.toString());
+        log.info("gotten year report");
+        log.info(yearReport.toString());
     }
 
     @Bean
     @ServiceActivator(inputChannel = "requests", outputChannel = "replies", sendTimeout = "10000")
     ChunkProcessorChunkHandler<String> chunkProcessorChunkHandler() {
         ItemProcessor<String, YearReport> itemProcessor = yearReportJson -> {
-            System.out.println("processing year report json: " + yearReportJson);
+            log.info("processing year report json: {}", yearReportJson);
             Thread.sleep(5);
             return deserializeYearReportJson(yearReportJson);
         };
